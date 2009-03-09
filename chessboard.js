@@ -34,7 +34,7 @@ var Chessboard = function() {
         br: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAOOAAADjgBT3J5yAAAAAd0SU1FB9kCGQsHAO0g1RQAAAHaSURBVGje7Zq/T8JAGIYfFDVxIv4BTQeDxBkTw+IMq4M1Lg7GyMAfwsBuXEgMiQmJYSHMnZhZxYWgAyOTC78cvCaF8KPtXSnIvcmX0PS73vtc6dfjDtDaPhWByZzoAmczuTfAYEG+EwOR59Y50FuQX1QBUVphqu3KNYDhinwnhiLf0eeK/JIMRNqDoZ4rP+URwomUq23PQ356mdl4wHOOTgBbfD72OVCvwI/rOqsUR9LsMh0AVwHbXqh8kPf+S0XSIBokAh0BdZ8lNayoCz+BdQjUIoaoCR/SigPViCCqCl4RU9oHKmuGqIh+QykM5TVBlP0WophPmBjwDDwCGIZBJpORHqFms0m323UOX4AnARSqTGfkLMuaqJBlWe67Ye70e0SqIti2TTablTbRarUigTdDftB3+6ulQTSIBtEgGkSDRDZFSSaT5HI5aRONRoN2ux3dFGXbZ7+XIQ9UoOv7/WF1Dbzxt1RKIpHANE1p551Oh36/7xwOgFvgPayR8rL3oSrm7aEo0R3e9z5UxVD0q0z3wCii5aCR6F9aD8A44gW6sfARWPkNgHDD5INAFDYEYDYKfstv6GtKEorpSaMG0SDqQL431O+X3wanotEmld4Ppv/2oaW1Dv0Cw42jSTIHjOcAAAAASUVORK5CYII=",
         bp: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAOOAAADjgBT3J5yAAAAAd0SU1FB9kCGQsHEYeQ9eYAAAHeSURBVGje7dnPK8NxHMfxpx/blB81CzlROK6cjVykieRGuYkc5Kjc1A5u+A84+AMcXKS4OeygpShL2Y1yW9TsB3Owb0nh+/3u/d3nvdmnXrfvZ/s+9vn9GdSLrtLg0ef2A9NABBgBfEC8lBPgqhp+nCiQBoo/5BWY1Y5YBwq/IKzkgXmtiD4bgK/JAR1SX94oCJly+LwPmKwFCKUJQR0k5KJOt0bIrYs6SY2QMxd1LjTOWs1AysGsdQ80aWyRAHDt4PkboEVbaywBDw7XkWKpzooWxK4LwPfsmUbEBBBWNk0heoGMIOQFCJoY7GvCg7UVWDUBGfaglSMmIIMeQIZMQAoeQNImICkPIJcmIHFNkHJKO/AkOP1mgAGTZ3QpyKLJld0HHAogtrXstyaAOxeAR2AZgfs1qW18qLQyu9n6B4SPE64XsFOBrpUoZ1UvtyW3+Lw1lBrsb8BGpRH7goDvOQD81Y6wcuz1uNmpAMJKzCtEGHsX1FJ5B2a8gJxXEGElKd3F5gwgrCxIQo4MQhJSCD/wbBBSBHoktijjQJvhHcSoBCSqYFM6JgEZUAAJS0C6FEA6awUS/DcQOyezNwUHn3f++FPIzgvmFbRIXqJrZRVAshKQnAKIhneoF0flA0CU3JLw+cFsAAAAAElFTkSuQmCC"
 	};
-    
+
     var ChessGame = function ChessGame() {
         this.playerWhite = true;
         this.pieces = {};
@@ -47,7 +47,7 @@ var Chessboard = function() {
             K : this._moveKing
         };
     };
-    
+
     var parser = {
         parse: function(move) {
             var mre = new RegExp("^([KQBNR]?)([a-h]?)([1-8]?)(x?)([a-h][1-8])");
@@ -104,6 +104,13 @@ var Chessboard = function() {
                 return undefined;
             }
             return String.fromCharCode(96 + row, 48 + col);
+        },
+
+        checkSquareValidity: function(sq) {
+            var regexp = new RegExp("^[a-h][1-8]");
+            if (!regexp.test(sq)) {
+                throw("Invalide square code: " + sq);
+            }
         }
     };
 
@@ -160,16 +167,16 @@ var Chessboard = function() {
             img.onload = mkdraw(ctx, img, x, y, sz);
         }
     };
-    
+
     var Piece = function(code) {
         this.checkValidity(code);
         this.code = code;
     };
-    
+
     Piece.prototype.type = function() {
         return this.code.charAt(1).toUpperCase();
     };
-    
+
     Piece.prototype.isWhite = function() {
         return this.code.charAt(0).toLowerCase() === "w";
     };
@@ -177,7 +184,7 @@ var Chessboard = function() {
     Piece.prototype.isBlack = function() {
         return this.code.charAt(0).toLowerCase() === "b";
     };
-  
+
     Piece.prototype.checkValidity = function(code) {
         var regexp = new RegExp("^[wb][kqbnrp]");
         if (!regexp.test(code)) {
@@ -185,50 +192,67 @@ var Chessboard = function() {
         }
     };
 
+    ChessGame.prototype.clear = function() {
+        if (arguments.length > 0) {
+            var sq = arguments[0];
+            utils.checkSquareValidity(sq);
+            this.pieces[sq] = undefined;
+        } else {
+            this.pieces = [];
+        }
+    };
+
+    ChessGame.prototype.set = function(code, sq) {
+	utils.checkSquareValidity(sq);
+        this.pieces[sq] = new Piece(code);
+    };
+
     ChessGame.prototype.initGame = function() {
-        var add = function(game) {
-            return function(piece, sq) {
-                game.pieces[sq] = new Piece(piece);
-            };
-        }(this);
+        this.set("wk", "e1");
+        this.set("bk", "e8");
 
-        add("wk", "e1");
-        add("bk", "e8");
+        this.set("wq", "d1");
+        this.set("bq", "d8");
 
-        add("wq", "d1");
-        add("bq", "d8");
+        this.set("wb", "c1");
+        this.set("wb", "f1");
+        this.set("bb", "c8");
+        this.set("bb", "f8");
 
-        add("wb", "c1");
-        add("wb", "f1");
-        add("bb", "c8");
-        add("bb", "f8");
+        this.set("wn", "b1");
+        this.set("wn", "g1");
+        this.set("bn", "b8");
+        this.set("bn", "g8");
 
-        add("wn", "b1");
-        add("wn", "g1");
-        add("bn", "b8");
-        add("bn", "g8");
+        this.set("wr", "a1");
+        this.set("wr", "h1");
+        this.set("br", "a8");
+        this.set("br", "h8");
 
-        add("wr", "a1");
-        add("wr", "h1");
-        add("br", "a8");
-        add("br", "h8");
+        this.set("wp", "a2");
+        this.set("wp", "b2");
+        this.set("wp", "c2");
+        this.set("wp", "d2");
+        this.set("wp", "e2");
+        this.set("wp", "f2");
+        this.set("wp", "g2");
+        this.set("wp", "h2");
+        this.set("bp", "a7");
+        this.set("bp", "b7");
+        this.set("bp", "c7");
+        this.set("bp", "d7");
+        this.set("bp", "e7");
+        this.set("bp", "f7");
+        this.set("bp", "g7");
+        this.set("bp", "h7");
+    };
 
-        add("wp", "a2");
-        add("wp", "b2");
-        add("wp", "c2");
-        add("wp", "d2");
-        add("wp", "e2");
-        add("wp", "f2");
-        add("wp", "g2");
-        add("wp", "h2");
-        add("bp", "a7");
-        add("bp", "b7");
-        add("bp", "c7");
-        add("bp", "d7");
-        add("bp", "e7");
-        add("bp", "f7");
-        add("bp", "g7");
-        add("bp", "h7");
+    ChessGame.prototype.setWhite = function() {
+        this.playerWhite = true;
+    };
+
+    ChessGame.prototype.setBlack = function() {
+        this.playerWhite = false;
     };
 
     ChessGame.prototype._isPlayerColor = function(p) {
@@ -364,7 +388,7 @@ var Chessboard = function() {
                 sq = utils.toSquare(move.fromCol, utils.row(move.dest) + 1);
                 p = this.pieces[sq];
                 p2 = this.pieces[move.dest];
-                if (p !== undefined && p.type() === "P" && 
+                if (p !== undefined && p.type() === "P" &&
                         p.isBlack() && p2 !== undefined && p2.isWhite())
                 {
                     this._move(sq, move.dest);
@@ -587,7 +611,7 @@ var Chessboard = function() {
     ChessGame.prototype.draw = function(id) {
         g.drawBoard(this, id);
     };
-    
+
     return {
         newGame: function() {
             if (arguments.length > 0) {
