@@ -35,19 +35,6 @@ var Chessboard = function() {
         bp: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAOOAAADjgBT3J5yAAAAAd0SU1FB9kCGQsHEYeQ9eYAAAHeSURBVGje7dnPK8NxHMfxpx/blB81CzlROK6cjVykieRGuYkc5Kjc1A5u+A84+AMcXKS4OeygpShL2Y1yW9TsB3Owb0nh+/3u/d3nvdmnXrfvZ/s+9vn9GdSLrtLg0ef2A9NABBgBfEC8lBPgqhp+nCiQBoo/5BWY1Y5YBwq/IKzkgXmtiD4bgK/JAR1SX94oCJly+LwPmKwFCKUJQR0k5KJOt0bIrYs6SY2QMxd1LjTOWs1AysGsdQ80aWyRAHDt4PkboEVbaywBDw7XkWKpzooWxK4LwPfsmUbEBBBWNk0heoGMIOQFCJoY7GvCg7UVWDUBGfaglSMmIIMeQIZMQAoeQNImICkPIJcmIHFNkHJKO/AkOP1mgAGTZ3QpyKLJld0HHAogtrXstyaAOxeAR2AZgfs1qW18qLQyu9n6B4SPE64XsFOBrpUoZ1UvtyW3+Lw1lBrsb8BGpRH7goDvOQD81Y6wcuz1uNmpAMJKzCtEGHsX1FJ5B2a8gJxXEGElKd3F5gwgrCxIQo4MQhJSCD/wbBBSBHoktijjQJvhHcSoBCSqYFM6JgEZUAAJS0C6FEA6awUS/DcQOyezNwUHn3f++FPIzgvmFbRIXqJrZRVAshKQnAKIhneoF0flA0CU3JLw+cFsAAAAAElFTkSuQmCC"
 	};
 
-    var ChessGame = function ChessGame() {
-        this.playerWhite = true;
-        this.pieces = {};
-        this.moveFct = {
-            P : this._movePawn,
-            N : this._moveKnight,
-            B : this._moveBishop,
-            R : this._moveRook,
-            Q : this._moveQueen,
-            K : this._moveKing
-        };
-    };
-
     var parser = {
         parse: function(move) {
             var mre = new RegExp("^([KQBNR]?)([a-h]?)([1-8]?)(x?)([a-h][1-8])");
@@ -192,424 +179,341 @@ var Chessboard = function() {
         }
     };
 
-    ChessGame.prototype.clear = function() {
-        if (arguments.length > 0) {
-            var sq = arguments[0];
-            utils.checkSquareValidity(sq);
-            this.pieces[sq] = undefined;
-        } else {
-            this.pieces = [];
-        }
-    };
+    var support = {
+        _isPlayerColor: function(game, p) {
+            return game.playerWhite ? p.isWhite() : p.isBlack();
+        },
 
-    ChessGame.prototype.set = function(code, sq) {
-	utils.checkSquareValidity(sq);
-        this.pieces[sq] = new Piece(code);
-    };
+        _move: function(game, from, to) {
+            //alert("from: " + from + ", to: " + to);
+            var p = game.pieces[from];
+            game.pieces[to] = p;
+            game.pieces[from] = undefined;
+        },
 
-    ChessGame.prototype.initGame = function() {
-        this.set("wk", "e1");
-        this.set("bk", "e8");
-
-        this.set("wq", "d1");
-        this.set("bq", "d8");
-
-        this.set("wb", "c1");
-        this.set("wb", "f1");
-        this.set("bb", "c8");
-        this.set("bb", "f8");
-
-        this.set("wn", "b1");
-        this.set("wn", "g1");
-        this.set("bn", "b8");
-        this.set("bn", "g8");
-
-        this.set("wr", "a1");
-        this.set("wr", "h1");
-        this.set("br", "a8");
-        this.set("br", "h8");
-
-        this.set("wp", "a2");
-        this.set("wp", "b2");
-        this.set("wp", "c2");
-        this.set("wp", "d2");
-        this.set("wp", "e2");
-        this.set("wp", "f2");
-        this.set("wp", "g2");
-        this.set("wp", "h2");
-        this.set("bp", "a7");
-        this.set("bp", "b7");
-        this.set("bp", "c7");
-        this.set("bp", "d7");
-        this.set("bp", "e7");
-        this.set("bp", "f7");
-        this.set("bp", "g7");
-        this.set("bp", "h7");
-    };
-
-    ChessGame.prototype.setWhite = function() {
-        this.playerWhite = true;
-    };
-
-    ChessGame.prototype.setBlack = function() {
-        this.playerWhite = false;
-    };
-
-    ChessGame.prototype._isPlayerColor = function(p) {
-        return this.playerWhite ? p.isWhite() : p.isBlack();
-    };
-
-    ChessGame.prototype._isEmpty = function(sq) {
-        var p = this.pieces[sq];
-        return p === undefined;
-    };
-
-    ChessGame.prototype._move = function(from, to) {
-        //alert("from: " + from + ", to: " + to);
-        var p = this.pieces[from];
-        this.pieces[to] = p;
-        this.pieces[from] = undefined;
-    };
-
-    ChessGame.prototype._checkCapture = function(move) {
-        if (move.capture) {
-            //var otherColor = this.playerWhite ? "black" : "white";
-            var p = this.pieces[move.dest];
-            if (p !== undefined && !this._isPlayerColor(p)) {
-                return;
-            } else {
-                throw("No piece to capture in " + move.dest);
-            }
-        }
-    };
-
-    ChessGame.prototype._checkEmpty = function(move) {
-        if (!move.capture) {
-            var p = this.pieces[move.dest];
-            if (p !== undefined) {
-                throw("Non empty square: " + move.dest);
-            }
-        }
-    };
-
-    ChessGame.prototype._moveCasteling = function(longCasteling) {
-        if (this.playerWhite) {
-            if (longCasteling) {
-                if (!this._isEmpty("b1") &&
-                    !this._isEmpty("c1") &&
-                    !this._isEmpty("d1"))
-                {
-                    throw("Long casteling not authorized");
-                }
-                this._move("e1", "c1");
-                this._move("a1", "d1");
-            } else {
-                if (!this._isEmpty("f1") &&
-                    !this._isEmpty("g1"))
-                {
-                    throw("Short casteling not authorized");
-                }
-                this._move("e1", "g1");
-                this._move("h1", "f1");
-            }
-        } else {
-            if (longCasteling) {
-                if (!this._isEmpty("b8") &&
-                    !this._isEmpty("c8") &&
-                    !this._isEmpty("d8"))
-                {
-                    throw("Long casteling not authorized");
-                }
-                this._move("e8", "c8");
-                this._move("a8", "d8");
-            } else {
-                if (!this._isEmpty("f8") &&
-                    !this._isEmpty("g8"))
-                {
-                    throw("Short casteling not authorized");
-                }
-                this._move("e8", "g8");
-                this._move("h8", "f8");
-            }
-        }
-    };
-
-    ChessGame.prototype._movePawn = function(move) {
-        this._checkCapture(move);
-        this._checkEmpty(move);
-        if (this.playerWhite) {
-            if (!move.capture) {
-                var c = utils.col(move.dest);
-                var r = utils.row(move.dest);
-                var sq = utils.toSquare(c, r - 1);
-                var p = this.pieces[sq];
-                if (p !== undefined && p.type() === "P" && p.isWhite()) {
-                    this._move(sq, move.dest);
+        _checkCapture: function(game, move) {
+            if (move.capture) {
+                var p = game.pieces[move.dest];
+                if (p !== undefined && !this._isPlayerColor(game, p)) {
                     return;
-                }
-                if (r === 4 && !p) {
-                    sq = utils.toSquare(c, r - 2);
-                    p = this.pieces[sq];
-                    if (p !== undefined && p.type() === "P" && p.isWhite()) {
-                        this._move(sq, move.dest);
-                        return;
-                    }
-                }
-            } else {
-                sq = utils.toSquare(move.fromCol, utils.row(move.dest) - 1);
-                p = this.pieces[sq];
-                var p2 = this.pieces[move.dest];
-                if (p !== undefined && p.type() === "P" && p.isWhite() &&
-                        p2 !== undefined && p2.isBlack())
-                {
-                    this._move(sq, move.dest);
-                    return;
-                }
-            }
-        } else {
-            if (!move.capture) {
-                c = utils.col(move.dest);
-                r = utils.row(move.dest);
-                sq = utils.toSquare(c, r + 1);
-                p = this.pieces[sq];
-                if (p !== undefined && p.type() === "P" && p.isBlack()) {
-                    this._move(sq, move.dest);
-                    return;
-                }
-                if (r === 5 && !p) {
-                    sq = utils.toSquare(c, r + 2);
-                    p = this.pieces[sq];
-                    if (p && p.type() === "P" && p.isBlack()) {
-                        this._move(sq, move.dest);
-                        return;
-                    }
-                }
-            } else {
-                sq = utils.toSquare(move.fromCol, utils.row(move.dest) + 1);
-                p = this.pieces[sq];
-                p2 = this.pieces[move.dest];
-                if (p !== undefined && p.type() === "P" &&
-                        p.isBlack() && p2 !== undefined && p2.isWhite())
-                {
-                    this._move(sq, move.dest);
-                    return;
-                }
-            }
-        }
-    };
-
-    ChessGame.prototype._moveKnight = function(move) {
-        this._checkCapture(move);
-        this._checkEmpty(move);
-        var cl = utils.col(move.dest);
-        var rw = utils.row(move.dest);
-        for (var i = -1; i <= 1; i+=2) {
-            for (var j = -1; j <= 1; j+=2) {
-                for (var k = 1; k <= 2; k++) {
-                    var c = cl + (k * i);
-                    var r = rw + (3 - k)* j;
-                    var sq = utils.toSquare(c, r);
-                    var p = this.pieces[sq];
-                    if (p !== undefined && p.type() === "N" &&
-                        this._isPlayerColor(p))
-                    {
-                        var from = true;
-                        if (move.fromCol !== undefined &&
-                            move.fromCol !== utils.col(sq))
-                        {
-                            from = false;
-                        }
-                        if (move.fromRow !== undefined &&
-                            move.fromRow !== utils.row(sq))
-                        {
-                            from = false;
-                        }
-                        if (from) {
-                            this._move(sq, move.dest);
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    ChessGame.prototype._moveBishop = function(move) {
-        this._checkCapture(move);
-        this._checkEmpty(move);
-        var cl = utils.col(move.dest);
-        var rw = utils.row(move.dest);
-        for (var i = -1; i <= 1; i+=2) {
-            for (var j = -1; j <= 1; j+=2) {
-                for (var k = 1; k <= 7; k++) {
-                    var c = cl + k*i;
-                    var r = rw + k*j;
-                    var sq = utils.toSquare(c, r);
-                    var p = this.pieces[sq];
-                    if (p !== undefined) {
-                        if (p.type() === "B" && this._isPlayerColor(p)) {
-                            var from = true;
-                            if (move.fromCol !== undefined &&
-                                move.fromCol !== utils.col(sq))
-                            {
-                                from = false;
-                            }
-                            if (move.fromRow !== undefined &&
-                                move.fromRow !== utils.row(sq))
-                            {
-                                from = false;
-                            }
-                            if (from) {
-                                this._move(sq, move.dest);
-                                return;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    ChessGame.prototype._moveRook = function(move) {
-        this._checkCapture(move);
-        this._checkEmpty(move);
-        var cl = utils.col(move.dest);
-        var rw = utils.row(move.dest);
-        for (var i = 0; i <= 1; i++) {
-            for (var j = -1; j <= 1; j+=2) {
-                for (var k = 1; k <= 7; k++) {
-                    var c = cl + k*i*j;
-                    var r = rw + k*(1-i)*j;
-                    var sq = utils.toSquare(c, r);
-                    var p = this.pieces[sq];
-                    if (p !== undefined) {
-                        if (p.type() === "R" && this._isPlayerColor(p)) {
-                            var from = true;
-                            if (move.fromCol !== undefined &&
-                                move.fromCol !== utils.col(sq))
-                            {
-                                from = false;
-                            }
-                            if (move.fromRow !== undefined &&
-                                move.fromRow !== utils.row(sq))
-                            {
-                                from = false;
-                            }
-                            if (from) {
-                                this._move(sq, move.dest);
-                                return;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        throw ("Rook cannot move to " + move.dest);
-    };
-
-    ChessGame.prototype._moveQueen = function(move) {
-        this._checkCapture(move);
-        this._checkEmpty(move);
-        var cl = utils.col(move.dest);
-        var rw = utils.row(move.dest);
-        for (var i = -1; i <= 1; i++) {
-            for (var j = -1; j <= 1; j++) {
-                for (var k = 1; k <= 7; k++) {
-                    var c = cl + k*i;
-                    var r = rw + k*j;
-                    var sq = utils.toSquare(c, r);
-                    var p = this.pieces[sq];
-                    if (p !== undefined) {
-                        if (p.type() === "Q" && this._isPlayerColor(p)) {
-                            var from = true;
-                            if (move.fromCol !== undefined &&
-                                move.fromCol !== utils.col(sq))
-                            {
-                                from = false;
-                            }
-                            if (move.fromRow !== undefined &&
-                                move.fromRow !== utils.row(sq))
-                            {
-                                from = false;
-                            }
-                            if (from) {
-                                this._move(sq, move.dest);
-                                return;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    };
-
-    ChessGame.prototype._moveKing = function(move) {
-        this._checkCapture(move);
-        this._checkEmpty(move);
-        var cl = utils.col(move.dest);
-        var rw = utils.row(move.dest);
-        for (var i = -1; i <= 1; i++) {
-            for (var j = -1; j <= 1; j++) {
-                var c = cl + i;
-                var r = rw + j;
-                var sq = utils.toSquare(c, r);
-                var p = this.pieces[sq];
-                if (p !== undefined) {
-                    if (p.type() === "K" && this._isPlayerColor(p)) {
-                        var from = true;
-                        if (move.fromCol !== undefined &&
-                            move.fromCol !== utils.col(sq))
-                        {
-                            from = false;
-                        }
-                        if (move.fromRow !== undefined &&
-                            move.fromRow !== utils.row(sq))
-                        {
-                            from = false;
-                        }
-                        if (from) {
-                            this._move(sq, move.dest);
-                            return;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-            }
-        }
-    };
-
-    ChessGame.prototype.move = function(moves) {
-        var splits = moves.split(" ");
-        for (var i in splits) {
-            var mv = splits[i];
-            try {
-                if (mv === "O-O-O") {
-                    this._moveCasteling(true);
-                } else if (mv === "O-O") {
-                    this._moveCasteling(false);
                 } else {
-                    var move = parser.parse(mv);
-                    var fct = this.moveFct[move.piece];
-                    var args = [];
-                    args.push(move);
-                    fct.apply(this, args);
+                    throw("No piece to capture in " + move.dest);
                 }
-                this.playerWhite = !this.playerWhite;
-            } catch (e) {
-                throw("Invalid move: " + mv + "\n" + e);
+            }
+        },
+
+        _checkEmpty: function(game, move) {
+            if (!move.capture) {
+                var p = game.pieces[move.dest];
+                if (p !== undefined) {
+                    throw("Non empty square: " + move.dest);
+                }
             }
         }
     };
 
-    ChessGame.prototype.draw = function(id) {
-        g.drawBoard(this, id);
+    var callbacks = {
+        O: function(longCasteling) {
+            var isEmpty = function(game) {
+                return function (sq) {
+                    var p = game.pieces[sq];
+                    return p === undefined;
+                };
+            }(this);
+
+            if (this.playerWhite) {
+                if (longCasteling) {
+                    if (!isEmpty("b1") &&
+                        !isEmpty("c1") &&
+                        !isEmpty("d1"))
+                    {
+                        throw("Long casteling not authorized");
+                    }
+                    support._move(this, "e1", "c1");
+                    support._move(this, "a1", "d1");
+                } else {
+                    if (!isEmpty("f1") &&
+                        !isEmpty("g1"))
+                    {
+                        throw("Short casteling not authorized");
+                    }
+                    support._move(this, "e1", "g1");
+                    support._move(this, "h1", "f1");
+                }
+            } else {
+                if (longCasteling) {
+                    if (!isEmpty("b8") &&
+                        !isEmpty("c8") &&
+                        !isEmpty("d8"))
+                    {
+                        throw("Long casteling not authorized");
+                    }
+                    support._move(this, "e8", "c8");
+                    support._move(this, "a8", "d8");
+                } else {
+                    if (!isEmpty("f8") &&
+                        !isEmpty("g8"))
+                    {
+                        throw("Short casteling not authorized");
+                    }
+                    support._move(this, "e8", "g8");
+                    support._move(this, "h8", "f8");
+                }
+            }
+        },
+
+        P: function(move) {
+            support._checkCapture(this, move);
+            support._checkEmpty(this, move);
+            if (this.playerWhite) {
+                if (!move.capture) {
+                    var c = utils.col(move.dest);
+                    var r = utils.row(move.dest);
+                    var sq = utils.toSquare(c, r - 1);
+                    var p = this.pieces[sq];
+                    if (p !== undefined && p.type() === "P" && p.isWhite()) {
+                        support._move(this, sq, move.dest);
+                        return;
+                    }
+                    if (r === 4 && !p) {
+                        sq = utils.toSquare(c, r - 2);
+                        p = this.pieces[sq];
+                        if (p !== undefined && p.type() === "P" && p.isWhite()) {
+                            support._move(this, sq, move.dest);
+                            return;
+                        }
+                    }
+                } else {
+                    sq = utils.toSquare(move.fromCol, utils.row(move.dest) - 1);
+                    p = this.pieces[sq];
+                    var p2 = this.pieces[move.dest];
+                    if (p !== undefined && p.type() === "P" && p.isWhite() &&
+                            p2 !== undefined && p2.isBlack())
+                    {
+                        support._move(this, sq, move.dest);
+                        return;
+                    }
+                }
+            } else {
+                if (!move.capture) {
+                    c = utils.col(move.dest);
+                    r = utils.row(move.dest);
+                    sq = utils.toSquare(c, r + 1);
+                    p = this.pieces[sq];
+                    if (p !== undefined && p.type() === "P" && p.isBlack()) {
+                        support._move(this, sq, move.dest);
+                        return;
+                    }
+                    if (r === 5 && !p) {
+                        sq = utils.toSquare(c, r + 2);
+                        p = this.pieces[sq];
+                        if (p && p.type() === "P" && p.isBlack()) {
+                            support._move(this, sq, move.dest);
+                            return;
+                        }
+                    }
+                } else {
+                    sq = utils.toSquare(move.fromCol, utils.row(move.dest) + 1);
+                    p = this.pieces[sq];
+                    p2 = this.pieces[move.dest];
+                    if (p !== undefined && p.type() === "P" &&
+                            p.isBlack() && p2 !== undefined && p2.isWhite())
+                    {
+                        support._move(this, sq, move.dest);
+                        return;
+                    }
+                }
+            }
+        },
+
+        N: function(move) {
+            support._checkCapture(this, move);
+            support._checkEmpty(this, move);
+            var cl = utils.col(move.dest);
+            var rw = utils.row(move.dest);
+            for (var i = -1; i <= 1; i+=2) {
+                for (var j = -1; j <= 1; j+=2) {
+                    for (var k = 1; k <= 2; k++) {
+                        var c = cl + (k * i);
+                        var r = rw + (3 - k)* j;
+                        var sq = utils.toSquare(c, r);
+                        var p = this.pieces[sq];
+                        if (p !== undefined && p.type() === "N" &&
+                            support._isPlayerColor(this, p))
+                        {
+                            var from = true;
+                            if (move.fromCol !== undefined &&
+                                move.fromCol !== utils.col(sq))
+                            {
+                                from = false;
+                            }
+                            if (move.fromRow !== undefined &&
+                                move.fromRow !== utils.row(sq))
+                            {
+                                from = false;
+                            }
+                            if (from) {
+                                support._move(this, sq, move.dest);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        B: function(move) {
+            support._checkCapture(this, move);
+            support._checkEmpty(this, move);
+            var cl = utils.col(move.dest);
+            var rw = utils.row(move.dest);
+            for (var i = -1; i <= 1; i+=2) {
+                for (var j = -1; j <= 1; j+=2) {
+                    for (var k = 1; k <= 7; k++) {
+                        var c = cl + k*i;
+                        var r = rw + k*j;
+                        var sq = utils.toSquare(c, r);
+                        var p = this.pieces[sq];
+                        if (p !== undefined) {
+                            if (p.type() === "B" && support._isPlayerColor(this, p)) {
+                                var from = true;
+                                if (move.fromCol !== undefined &&
+                                    move.fromCol !== utils.col(sq))
+                                {
+                                    from = false;
+                                }
+                                if (move.fromRow !== undefined &&
+                                    move.fromRow !== utils.row(sq))
+                                {
+                                    from = false;
+                                }
+                                if (from) {
+                                    support._move(this, sq, move.dest);
+                                    return;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        R: function(move) {
+            support._checkCapture(this, move);
+            support._checkEmpty(this, move);
+            var cl = utils.col(move.dest);
+            var rw = utils.row(move.dest);
+            for (var i = 0; i <= 1; i++) {
+                for (var j = -1; j <= 1; j+=2) {
+                    for (var k = 1; k <= 7; k++) {
+                        var c = cl + k*i*j;
+                        var r = rw + k*(1-i)*j;
+                        var sq = utils.toSquare(c, r);
+                        var p = this.pieces[sq];
+                        if (p !== undefined) {
+                            if (p.type() === "R" && support._isPlayerColor(this, p)) {
+                                var from = true;
+                                if (move.fromCol !== undefined &&
+                                    move.fromCol !== utils.col(sq))
+                                {
+                                    from = false;
+                                }
+                                if (move.fromRow !== undefined &&
+                                    move.fromRow !== utils.row(sq))
+                                {
+                                    from = false;
+                                }
+                                if (from) {
+                                    support._move(this, sq, move.dest);
+                                    return;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            throw ("Rook cannot move to " + move.dest);
+        },
+
+        Q: function(move) {
+            support._checkCapture(this, move);
+            support._checkEmpty(this, move);
+            var cl = utils.col(move.dest);
+            var rw = utils.row(move.dest);
+            for (var i = -1; i <= 1; i++) {
+                for (var j = -1; j <= 1; j++) {
+                    for (var k = 1; k <= 7; k++) {
+                        var c = cl + k*i;
+                        var r = rw + k*j;
+                        var sq = utils.toSquare(c, r);
+                        var p = this.pieces[sq];
+                        if (p !== undefined) {
+                            if (p.type() === "Q" && support._isPlayerColor(this, p)) {
+                                var from = true;
+                                if (move.fromCol !== undefined &&
+                                    move.fromCol !== utils.col(sq))
+                                {
+                                    from = false;
+                                }
+                                if (move.fromRow !== undefined &&
+                                    move.fromRow !== utils.row(sq))
+                                {
+                                    from = false;
+                                }
+                                if (from) {
+                                    support._move(this, sq, move.dest);
+                                    return;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        K: function(move) {
+            support._checkCapture(this, move);
+            support._checkEmpty(this, move);
+            var cl = utils.col(move.dest);
+            var rw = utils.row(move.dest);
+            for (var i = -1; i <= 1; i++) {
+                for (var j = -1; j <= 1; j++) {
+                    var c = cl + i;
+                    var r = rw + j;
+                    var sq = utils.toSquare(c, r);
+                    var p = this.pieces[sq];
+                    if (p !== undefined) {
+                        if (p.type() === "K" &&
+                            support._isPlayerColor(this, p))
+                        {
+                            var from = true;
+                            if (move.fromCol !== undefined &&
+                                move.fromCol !== utils.col(sq))
+                            {
+                                from = false;
+                            }
+                            if (move.fromRow !== undefined &&
+                                move.fromRow !== utils.row(sq))
+                            {
+                                from = false;
+                            }
+                            if (from) {
+                                support._move(this, sq, move.dest);
+                                return;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     };
 
     return {
@@ -617,9 +521,108 @@ var Chessboard = function() {
             if (arguments.length > 0) {
                 //alert(arguments[0]);
             }
-            var game = new ChessGame();
+            var game = new (this.ChessGame)();
             game.initGame();
             return game;
+        },
+
+        ChessGame: function() {
+            this.playerWhite = true;
+            this.pieces = {};
+        },
+
+        initialize: function() {
+            this.ChessGame.prototype = {
+                initGame: function() {
+                    this.set("wk", "e1");
+                    this.set("bk", "e8");
+
+                    this.set("wq", "d1");
+                    this.set("bq", "d8");
+
+                    this.set("wb", "c1");
+                    this.set("wb", "f1");
+                    this.set("bb", "c8");
+                    this.set("bb", "f8");
+
+                    this.set("wn", "b1");
+                    this.set("wn", "g1");
+                    this.set("bn", "b8");
+                    this.set("bn", "g8");
+
+                    this.set("wr", "a1");
+                    this.set("wr", "h1");
+                    this.set("br", "a8");
+                    this.set("br", "h8");
+
+                    this.set("wp", "a2");
+                    this.set("wp", "b2");
+                    this.set("wp", "c2");
+                    this.set("wp", "d2");
+                    this.set("wp", "e2");
+                    this.set("wp", "f2");
+                    this.set("wp", "g2");
+                    this.set("wp", "h2");
+                    this.set("bp", "a7");
+                    this.set("bp", "b7");
+                    this.set("bp", "c7");
+                    this.set("bp", "d7");
+                    this.set("bp", "e7");
+                    this.set("bp", "f7");
+                    this.set("bp", "g7");
+                    this.set("bp", "h7");
+                },
+
+                clear: function() {
+                    if (arguments.length > 0) {
+                        var sq = arguments[0];
+                        utils.checkSquareValidity(sq);
+                        this.pieces[sq] = undefined;
+                    } else {
+                        this.pieces = [];
+                    }
+                },
+
+                set: function(code, sq) {
+                    utils.checkSquareValidity(sq);
+                    this.pieces[sq] = new Piece(code);
+                },
+
+                setWhite: function() {
+                    this.playerWhite = true;
+                },
+
+                setBlack: function() {
+                    this.playerWhite = false;
+                },
+
+                move: function(moves) {
+                    var splits = moves.split(" ");
+                    for (var i in splits) {
+                        var mv = splits[i];
+                        try {
+                            if (mv === "O-O-O") {
+                                callbacks.O.call(this, true);
+                            } else if (mv === "O-O") {
+                                callbacks.O.call(this, false);
+                            } else {
+                                var move = parser.parse(mv);
+                                var fct = callbacks[move.piece];
+                                fct.call(this, move);
+                            }
+                            this.playerWhite = !this.playerWhite;
+                        } catch (e) {
+                            throw("Invalid move: " + mv + "\n" + e);
+                        }
+                    }
+                },
+
+                draw: function(id) {
+                    g.drawBoard(this, id);
+                }
+            };
         }
     };
 }();
+
+Chessboard.initialize();
