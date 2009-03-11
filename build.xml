@@ -27,10 +27,15 @@
   <condition property="isUnix">
     <os family="unix"/>
   </condition>
+  
+  <condition property="generate-doc">
+    <istrue value="${project.jsdoc}"/>
+  </condition>
+  
 
-<taskdef name="jsmin"
-        classname="net.matthaynes.jsmin.JSMin_Task"
-        classpath="${contrib}/jsmin-0.2.3.jar"/>
+  <taskdef name="jsmin"
+           classname="net.matthaynes.jsmin.JSMin_Task"
+           classpath="${contrib}/jsmin-0.2.3.jar"/>
 
   <taskdef name="jsdoctoolkit"
            classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
@@ -83,7 +88,7 @@
            destdir="${build}/${ant.project.name}"/>
   </target>
 
-  <target name="doc" depends="prepare-dist" if="project.jsdoc"
+  <target name="doc" depends="prepare-dist" if="generate-doc"
           description="Call JSDoc-toolkit documentation framework">
     <mkdir dir="${build}/${ant.project.name}/doc" />
     <jsdoctoolkit jsdochome="${project.jsdoc.path}"
