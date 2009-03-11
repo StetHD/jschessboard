@@ -19,6 +19,10 @@
  *
  * ***** END LICENSE BLOCK *****  */
 
+/**
+ * @namespace
+ * Global namespace defined by the library.
+ */
 var Chessboard = function() {
     var images = {
         wk: "data:image/png;base64,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",
@@ -155,6 +159,7 @@ var Chessboard = function() {
         }
     };
 
+    /** @private */
     var Piece = function(code) {
         this.checkValidity(code);
         this.code = code;
@@ -517,6 +522,10 @@ var Chessboard = function() {
     };
 
     return {
+        /**
+         * Creates a new game with all pieces set at their initial position
+         * @returns {Chessboard.ChessGame} a new chess game
+         */
         newGame: function() {
             if (arguments.length > 0) {
                 //alert(arguments[0]);
@@ -526,11 +535,19 @@ var Chessboard = function() {
             return game;
         },
 
+        /**
+         * @class This class represents a chess game.
+         */
         ChessGame: function() {
             this.playerWhite = true;
             this.pieces = {};
         },
 
+        /**
+         * @private
+         * This initialization method is called when the script is
+         * loaded by the browser.
+         */
         initialize: function() {
             this.ChessGame.prototype = {
                 initGame: function() {
@@ -617,6 +634,12 @@ var Chessboard = function() {
                     }
                 },
 
+                /**
+                 * Draw a chessboard diagram representing the current
+                 * game position.
+                 * @param {String} id the DOM id attribute of the canvas element
+                 *        on which the chessboard must be drawn.
+                 */
                 draw: function(id) {
                     g.drawBoard(this, id);
                 }
