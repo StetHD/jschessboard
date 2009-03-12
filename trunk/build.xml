@@ -80,10 +80,6 @@
 
   <target name="minimize" depends="prepare-dist"
           description="Minimize the JavaScript files with JSMin">
-    <!-- <java jar="${contrib}/jsmin.jar" fork="true"
-          output="${build}/${ant.project.name}/chessboard-small.js">
-      <arg value="chessboard.js"/>
-    </java> -->
     <jsmin srcfile="chessboard.js" suffix="true" force="true"
            destdir="${build}/${ant.project.name}"/>
   </target>
