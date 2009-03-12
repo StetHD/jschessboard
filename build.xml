@@ -27,11 +27,11 @@
   <condition property="isUnix">
     <os family="unix"/>
   </condition>
-  
+
   <condition property="generate-doc">
     <istrue value="${project.jsdoc}"/>
   </condition>
-  
+
 
   <taskdef name="jsmin"
            classname="net.matthaynes.jsmin.JSMin_Task"

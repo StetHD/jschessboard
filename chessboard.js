@@ -22,8 +22,10 @@
 /**
  * @namespace
  * Global namespace defined by the library.
+ * @author <a href="mailto:sirot@xulfactory.org">Jean-Christophe Sirot</a>
  */
 var Chessboard = function() {
+    /** @inner */
     var images = {
         wk: "data:image/png;base64,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",
         wq: "data:image/png;base64,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",
@@ -39,7 +41,12 @@ var Chessboard = function() {
         bp: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAAOOAAADjgBT3J5yAAAAAd0SU1FB9kCGQsHEYeQ9eYAAAHeSURBVGje7dnPK8NxHMfxpx/blB81CzlROK6cjVykieRGuYkc5Kjc1A5u+A84+AMcXKS4OeygpShL2Y1yW9TsB3Owb0nh+/3u/d3nvdmnXrfvZ/s+9vn9GdSLrtLg0ef2A9NABBgBfEC8lBPgqhp+nCiQBoo/5BWY1Y5YBwq/IKzkgXmtiD4bgK/JAR1SX94oCJly+LwPmKwFCKUJQR0k5KJOt0bIrYs6SY2QMxd1LjTOWs1AysGsdQ80aWyRAHDt4PkboEVbaywBDw7XkWKpzooWxK4LwPfsmUbEBBBWNk0heoGMIOQFCJoY7GvCg7UVWDUBGfaglSMmIIMeQIZMQAoeQNImICkPIJcmIHFNkHJKO/AkOP1mgAGTZ3QpyKLJld0HHAogtrXstyaAOxeAR2AZgfs1qW18qLQyu9n6B4SPE64XsFOBrpUoZ1UvtyW3+Lw1lBrsb8BGpRH7goDvOQD81Y6wcuz1uNmpAMJKzCtEGHsX1FJ5B2a8gJxXEGElKd3F5gwgrCxIQo4MQhJSCD/wbBBSBHoktijjQJvhHcSoBCSqYFM6JgEZUAAJS0C6FEA6awUS/DcQOyezNwUHn3f++FPIzgvmFbRIXqJrZRVAshKQnAKIhneoF0flA0CU3JLw+cFsAAAAAElFTkSuQmCC"
 	};
 
+    /** @inner */
     var parser = {
+        /**
+         * @private
+         * Parses a chess move in short algebraic notation.
+         */
         parse: function(move) {
             var mre = new RegExp("^([KQBNR]?)([a-h]?)([1-8]?)(x?)([a-h][1-8])");
             if (mre.test(move)) {
@@ -50,6 +57,21 @@ var Chessboard = function() {
             }
         },
 
+        /**
+         * @private
+         * Gathers all information of a move in a single object.
+         * @param {String} piece the piece type (K,Q,R,B,N) or empty string for
+         *        the pawn
+         * @param {String} fromCol the origin column for disambiguation. May be
+         *        undefined
+         * @param {String} fromRow the origin row for disambiguation. May be
+         *        undefined
+         * @param {Boolean} capture indicates if the move captures an opponent
+         *        piece
+         * @param {String} dest the code of the piece destination square
+         *
+         * @return the move object
+         */
         makeMove: function(piece, fromCol, fromRow, capture, dest) {
             var move = {};
             if (piece !== "") {
@@ -73,7 +95,12 @@ var Chessboard = function() {
         }
     };
 
+    /** @inner */
     var utils = {
+        /**
+         * @private
+         * Converts a column code ['a'-'h'] into an integer [1-8]
+         */
         col: function(sq) {
             var col = sq.charCodeAt(0) - 96;
             if (col < 1 || col > 8) {
@@ -82,6 +109,10 @@ var Chessboard = function() {
             return col;
         },
 
+        /**
+         * @private
+         * Converts a row code ['1'-'8'] into an integer [1-8]
+         */
         row: function(sq) {
             var row = sq.charCodeAt(1) - 48;
             if (row < 1 || row > 8) {
@@ -90,6 +121,12 @@ var Chessboard = function() {
             return row;
         },
 
+        /**
+         * @private
+         * Converts a couple column, row into a square code
+         * @return {String} a square code or undefined if the square does not
+         *         exist (row and column out of range)
+         */
         toSquare: function(row, col) {
             if (row < 1 || row > 8 || col < 1 || col > 8) {
                 return undefined;
@@ -97,6 +134,7 @@ var Chessboard = function() {
             return String.fromCharCode(96 + row, 48 + col);
         },
 
+        /** @private */
         checkSquareValidity: function(sq) {
             var regexp = new RegExp("^[a-h][1-8]");
             if (!regexp.test(sq)) {
@@ -105,7 +143,15 @@ var Chessboard = function() {
         }
     };
 
+    /** @inner */
     var g = {
+        /**
+         * @private
+         * Draw the chessboard diagram into the canvas identified by an
+         * 'id' attribute.
+         * @param {ChessGame} game the position to be drawn
+         * @param {String} id id attribute of the canvas element
+         */
         drawBoard: function(game, id) {
             var canvas = document.getElementById(id);
             var ratio = canvas.height / 400;
@@ -118,6 +164,12 @@ var Chessboard = function() {
             }
         },
 
+        /**
+         * @private
+         * Draw the chessboard without the pieces
+         * @param ctx the 2D context of the canvas element
+         * @param {Number} the drawing ratio
+         */
         initBoard: function(ctx, ratio) {
             var sz = 50 * ratio;
             ctx.fillStyle = "rgb(0,127,0)";
@@ -138,7 +190,15 @@ var Chessboard = function() {
             }
         },
 
-        drawPiece: function(ctx, ratio, piece, sq) {
+        /**
+         * @private
+         * Draw a chess piece
+         * @param ctx the 2D context of the canvas element
+         * @param {Number} the drawing ratio
+         * @param {Piece} piece the piece to be drawn
+         * @param {String} sq the code of the square on which the piece is drawn
+         */
+       drawPiece: function(ctx, ratio, piece, sq) {
             /* for browsers which do not support delayed image loading
 			var sz = ratio * 50;
             x = (sq.charCodeAt(0) - 97) * sz;
@@ -147,6 +207,7 @@ var Chessboard = function() {
             img.src = piece.g;
             ctx.drawImage(img, x, y, sz, sz);
             */
+            /** @inner */
             var mkdraw = function (ctx, img, x, y, s) {
                 return function() { ctx.drawImage(img, x, y, s, s); };
             };
@@ -165,18 +226,22 @@ var Chessboard = function() {
         this.code = code;
     };
 
+    /** @inner */
     Piece.prototype.type = function() {
         return this.code.charAt(1).toUpperCase();
     };
 
+    /** @inner */
     Piece.prototype.isWhite = function() {
         return this.code.charAt(0).toLowerCase() === "w";
     };
 
+    /** @inner */
     Piece.prototype.isBlack = function() {
         return this.code.charAt(0).toLowerCase() === "b";
     };
 
+    /** @inner */
     Piece.prototype.checkValidity = function(code) {
         var regexp = new RegExp("^[wb][kqbnrp]");
         if (!regexp.test(code)) {
@@ -184,6 +249,7 @@ var Chessboard = function() {
         }
     };
 
+    /** @inner */
     var support = {
         _isPlayerColor: function(game, p) {
             return game.playerWhite ? p.isWhite() : p.isBlack();
@@ -521,6 +587,7 @@ var Chessboard = function() {
         }
     };
 
+    /** @scope Chessboard */
     return {
         /**
          * Creates a new game with all pieces set at their initial position
@@ -550,7 +617,13 @@ var Chessboard = function() {
          */
         initialize: function() {
             this.ChessGame.prototype = {
-                initGame: function() {
+                /**
+                 * Resets the game to the initial chessboard position.
+                 * @method reset
+                 */
+                reset: function() {
+                    this.pieces = {};
+                    this.playerWhite = true;
                     this.set("wk", "e1");
                     this.set("bk", "e8");
 
@@ -590,6 +663,9 @@ var Chessboard = function() {
                     this.set("bp", "h7");
                 },
 
+                /**
+                 * Removes all pieces or clear a single square of the chessboard.
+                 */
                 clear: function() {
                     if (arguments.length > 0) {
                         var sq = arguments[0];
@@ -600,15 +676,57 @@ var Chessboard = function() {
                     }
                 },
 
+                /**
+                 * Sets a piece on a square of the chessboard.
+                 * <p>The piece code is a String of the form XY where:</p>
+                 * <ul>
+                 *   <li>X is the piece color:
+                 *     <ul>
+                 *       <li>'w' for white
+                 *       <li>'b' for black
+                 *     </ul>
+                 *   </li>
+                 *   <li>Y is the piece type
+                 *     <ul>
+                 *       <li>'k' for King
+                 *       <li>'q' for Queen
+                 *       <li>'r' for Rook
+                 *       <li>'b' for Bishop
+                 *       <li>'n' for Knight
+                 *       <li>'p' for Pawn
+                 *     </ul>
+                 *   </li>
+                 * </ul>
+                 *
+                 * <p>The square code uses the traditional chess square
+                 * notation: 'a1', 'f6' or 'h8' are valid squares.</p>
+                 *
+                 * <p>Examples:</p>
+                 * <ul>
+                 *   <li>set('wq', 'd1') puts a white queen on square 'd1'</li>
+                 *   <li>set('bn', 'c6') puts a black knight on square 'c3'</li>
+                 * </ul>
+                 *
+                 * @method set
+                 * @param {String} code the code of the piece to set.
+                 * @param {String} sq the code
+                 *
+                 */
                 set: function(code, sq) {
                     utils.checkSquareValidity(sq);
                     this.pieces[sq] = new Piece(code);
                 },
 
+                /**
+                 * Changes the current player to white.
+                 */
                 setWhite: function() {
                     this.playerWhite = true;
                 },
 
+                /**
+                 * Changes the current player to black.
+                 */
                 setBlack: function() {
                     this.playerWhite = false;
                 },
