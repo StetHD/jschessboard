@@ -354,6 +354,7 @@ var Chessboard = function() {
                             return;
                         }
                     }
+                    throw ("Pawn cannot move to " + move.dest);
                 } else {
                     sq = utils.toSquare(move.fromCol, utils.row(move.dest) - 1);
                     p = this.pieces[sq];
@@ -364,6 +365,7 @@ var Chessboard = function() {
                         support._move(this, sq, move.dest);
                         return;
                     }
+                    throw ("Pawn cannot move to " + move.dest);
                 }
             } else {
                 if (!move.capture) {
@@ -383,6 +385,7 @@ var Chessboard = function() {
                             return;
                         }
                     }
+                    throw ("Pawn cannot move to " + move.dest);
                 } else {
                     sq = utils.toSquare(move.fromCol, utils.row(move.dest) + 1);
                     p = this.pieces[sq];
@@ -393,6 +396,7 @@ var Chessboard = function() {
                         support._move(this, sq, move.dest);
                         return;
                     }
+                    throw ("Pawn cannot move to " + move.dest);
                 }
             }
         },
@@ -431,6 +435,7 @@ var Chessboard = function() {
                     }
                 }
             }
+            throw ("Knight cannot move to " + move.dest);
         },
 
         B: function(move) {
@@ -469,6 +474,7 @@ var Chessboard = function() {
                     }
                 }
             }
+            throw ("Bishop cannot move to " + move.dest);
         },
 
         R: function(move) {
@@ -546,6 +552,7 @@ var Chessboard = function() {
                     }
                 }
             }
+            throw ("Queen cannot move to " + move.dest);
         },
 
         K: function(move) {
@@ -584,6 +591,7 @@ var Chessboard = function() {
                     }
                 }
             }
+            throw ("King cannot move to " + move.dest);
         }
     };
 
@@ -598,11 +606,15 @@ var Chessboard = function() {
                 //alert(arguments[0]);
             }
             var game = new (this.ChessGame)();
-            game.initGame();
+            game.reset();
             return game;
         },
 
         /**
+         * Creates a new ChessGame instance. This constructor should not
+         * be called directly. Call Chessboard.newGame() to create a new
+         * ChessGame.
+         *
          * @class This class represents a chess game.
          */
         ChessGame: function() {
