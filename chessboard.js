@@ -90,7 +90,7 @@ var Chessboard = function() {
             } else {
                 move.capture = false;
             }
-            if (promotion !== "") {
+            if (promotion !== undefined) {
                 if (piece != "" ||
                     (dest.substring(1) !== "1" && dest.substring(1) !== "8"))
                 {
