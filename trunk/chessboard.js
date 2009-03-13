@@ -48,10 +48,10 @@ var Chessboard = function() {
          * Parses a chess move in short algebraic notation.
          */
         parse: function(move) {
-            var mre = new RegExp("^([KQBNR]?)([a-h]?)([1-8]?)(x?)([a-h][1-8])");
+            var mre = new RegExp("^([KQBNR]?)([a-h]?)([1-8]?)(x?)([a-h][1-8])(=([QRBN]))?");
             if (mre.test(move)) {
                 var m = mre.exec(move);
-                return parser.makeMove(m[1], m[2], m[3], m[4], m[5]);
+                return parser.makeMove(m[1], m[2], m[3], m[4], m[5], m[7]);
             } else {
                 throw("Move parsing failed");
             }
@@ -72,7 +72,7 @@ var Chessboard = function() {
          *
          * @return the move object
          */
-        makeMove: function(piece, fromCol, fromRow, capture, dest) {
+        makeMove: function(piece, fromCol, fromRow, capture, dest, promotion) {
             var move = {};
             if (piece !== "") {
                 move.piece = piece;
@@ -89,6 +89,14 @@ var Chessboard = function() {
                 move.capture = true;
             } else {
                 move.capture = false;
+            }
+            if (promotion !== "") {
+                if (piece != "" ||
+                    (dest.substring(1) !== "1" && dest.substring(1) !== "8"))
+                {
+                    throw("Move parsing failed");
+                }
+                move.promotion = promotion;
             }
             move.dest = dest;
             return move;
@@ -255,11 +263,19 @@ var Chessboard = function() {
             return game.playerWhite ? p.isWhite() : p.isBlack();
         },
 
-        _move: function(game, from, to) {
+        _move: function(game, from, to, promotion) {
             //alert("from: " + from + ", to: " + to);
             var p = game.pieces[from];
-            game.pieces[to] = p;
             game.pieces[from] = undefined;
+            if (promotion === undefined) {
+                game.pieces[to] = p;
+            } else {
+                if (p.isWhite()) {
+                    game.set("w" + promotion.toLowerCase(), to);
+                } else {
+                    game.set("b" + promotion.toLowerCase(), to);
+                }
+            }
         },
 
         _checkCapture: function(game, move) {
@@ -343,7 +359,12 @@ var Chessboard = function() {
                     var sq = utils.toSquare(c, r - 1);
                     var p = this.pieces[sq];
                     if (p !== undefined && p.type() === "P" && p.isWhite()) {
-                        support._move(this, sq, move.dest);
+                        if (r === 8) {
+                            if (move.promotion === undefined) {
+                                throw ("Missing pawn promotion");
+                            }
+                        }
+                        support._move(this, sq, move.dest, move.promotion);
                         return;
                     }
                     if (r === 4 && !p) {
@@ -362,7 +383,12 @@ var Chessboard = function() {
                     if (p !== undefined && p.type() === "P" && p.isWhite() &&
                             p2 !== undefined && p2.isBlack())
                     {
-                        support._move(this, sq, move.dest);
+                        if (r === 8) {
+                            if (move.promotion === undefined) {
+                                throw ("Missing pawn promotion");
+                            }
+                        }
+                        support._move(this, sq, move.dest, move.promotion);
                         return;
                     }
                     throw ("Pawn cannot move to " + move.dest);
@@ -374,7 +400,12 @@ var Chessboard = function() {
                     sq = utils.toSquare(c, r + 1);
                     p = this.pieces[sq];
                     if (p !== undefined && p.type() === "P" && p.isBlack()) {
-                        support._move(this, sq, move.dest);
+                        if (r === 1) {
+                            if (move.promotion === undefined) {
+                                throw ("Missing pawn promotion");
+                            }
+                        }
+                        support._move(this, sq, move.dest, move.promotion);
                         return;
                     }
                     if (r === 5 && !p) {
@@ -393,7 +424,12 @@ var Chessboard = function() {
                     if (p !== undefined && p.type() === "P" &&
                             p.isBlack() && p2 !== undefined && p2.isWhite())
                     {
-                        support._move(this, sq, move.dest);
+                        if (r === 1) {
+                            if (move.promotion === undefined) {
+                                throw ("Missing pawn promotion");
+                            }
+                        }
+                        support._move(this, sq, move.dest, move.promotion);
                         return;
                     }
                     throw ("Pawn cannot move to " + move.dest);
