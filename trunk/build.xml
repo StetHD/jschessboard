@@ -24,9 +24,9 @@
   <property name="build" location="build"/>
   <property name="contrib" location="contrib"/>
 
-  <condition property="isUnix">
+  <!--condition property="isUnix">
     <os family="unix"/>
-  </condition>
+  </condition-->
 
   <condition property="generate-doc">
     <istrue value="${project.jsdoc}"/>
@@ -63,15 +63,15 @@
     </copy>
   </target>
 
-  <target name="dist-unix" if="isUnix">
+  <!--target name="dist-unix" if="isUnix">
     <tar basedir="${build}"
          destfile="${build}/${distname}.tar"
          includes="${ant.project.name}/**"/>
     <bzip2 src="${build}/${distname}.tar"
            destfile="${build}/${distname}.tar.bz2" />
-  </target>
+  </target-->
 
-  <target name="dist" depends="prepare-dist, minimize, doc, dist-unix"
+  <target name="dist" depends="prepare-dist, minimize, doc"
           description="Build the project distribution archive">
     <zip basedir="${build}"
          includes="${ant.project.name}/**"
