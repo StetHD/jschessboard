@@ -41,13 +41,13 @@
     function play() {
       try {
         game = Chessboard.newGame();
-        game.move("e4 e5 Nf3 d6 d4 Bg4");
+        game.move("e4, e5, Nf3, d6, d4, Bg4");
         game.draw("board1");
-        game.move("dxe5 Bxf3 Qxf3 dxe5 Bc4 Nf6 Qb3 Qe7");
+        game.move("dxe5, Bxf3, Qxf3, dxe5, Bc4, Nf6, Qb3, Qe7");
         game.draw("board2");
-        game.move("Nc3 c6 Bg5 b5 Nxb5 cxb5 Bxb5 Nbd7 O-O-O Rd8");
+        game.move("Nc3, c6, Bg5, b5, Nxb5, cxb5, Bxb5, Nbd7, O-O-O, Rd8");
         game.draw("board3");
-        game.move("Rxd7 Rxd7 Rd1 Qe6 Bxd7 Nxd7 Qb8 Nxb8 Rd8");
+        game.move("Rxd7, Rxd7, Rd1, Qe6, Bxd7, Nxd7, Qb8, Nxb8, Rd8");
         game.draw("board4");
       } catch (ex) {
         alert(ex);

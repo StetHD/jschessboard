@@ -780,9 +780,11 @@ var Chessboard = function() {
                 },
 
                 move: function(moves) {
-                    var splits = moves.split(" ");
+                    var re = new RegExp("\\s*,\\s*");
+                    var splits = moves.split(re);
                     for (var i in splits) {
                         var mv = splits[i];
+                        //~ alert(mv);
                         try {
                             if (mv === "O-O-O") {
                                 callbacks.O.call(this, true);
