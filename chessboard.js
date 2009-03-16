@@ -263,8 +263,17 @@ var Chessboard = function() {
             return game.playerWhite ? p.isWhite() : p.isBlack();
         },
 
+        /**
+         * Move a piece on a chessboard.
+         *
+         * @function _move
+         * @param {ChessGame} game the ChessGame on which the move is applied
+         * @param {String} from the code of the origin square
+         * @param {String} to the code of the destination square
+         * @param {String} the code (Q, B, N, R) of the piece if the move
+         *        is a pawn promotion, <code>undefined</code> otherwise.
+         */
         _move: function(game, from, to, promotion) {
-            //alert("from: " + from + ", to: " + to);
             var p = game.pieces[from];
             game.pieces[from] = undefined;
             if (promotion === undefined) {
@@ -299,8 +308,16 @@ var Chessboard = function() {
         }
     };
 
+    /** @inner
+     * The callbacks invoked to apply a piece move on a chessboard position.
+     */
     var callbacks = {
+        /**
+         * @private Casteling callback
+         * @function O
+         */
         O: function(longCasteling) {
+            /** @inner */
             var isEmpty = function(game) {
                 return function (sq) {
                     var p = game.pieces[sq];
@@ -349,6 +366,10 @@ var Chessboard = function() {
             }
         },
 
+        /**
+         * @private Pawn move callback
+         * @function P
+         */
         P: function(move) {
             support._checkCapture(this, move);
             support._checkEmpty(this, move);
@@ -437,6 +458,10 @@ var Chessboard = function() {
             }
         },
 
+        /**
+         * @private Knight move callback
+         * @function N
+         */
         N: function(move) {
             support._checkCapture(this, move);
             support._checkEmpty(this, move);
@@ -474,6 +499,10 @@ var Chessboard = function() {
             throw ("Knight cannot move to " + move.dest);
         },
 
+        /**
+         * @private Bishop move callback
+         * @function B
+         */
         B: function(move) {
             support._checkCapture(this, move);
             support._checkEmpty(this, move);
@@ -513,6 +542,10 @@ var Chessboard = function() {
             throw ("Bishop cannot move to " + move.dest);
         },
 
+        /**
+         * @private Rook move callback
+         * @function R
+         */
         R: function(move) {
             support._checkCapture(this, move);
             support._checkEmpty(this, move);
@@ -552,6 +585,10 @@ var Chessboard = function() {
             throw ("Rook cannot move to " + move.dest);
         },
 
+        /**
+         * @private Queen move callback
+         * @function Q
+         */
         Q: function(move) {
             support._checkCapture(this, move);
             support._checkEmpty(this, move);
@@ -591,6 +628,10 @@ var Chessboard = function() {
             throw ("Queen cannot move to " + move.dest);
         },
 
+        /**
+         * @private King move callback
+         * @function K
+         */
         K: function(move) {
             support._checkCapture(this, move);
             support._checkEmpty(this, move);
@@ -779,6 +820,19 @@ var Chessboard = function() {
                     this.playerWhite = false;
                 },
 
+                /**
+                 * Applies a sequence of piece moves to the current position.
+                 * <p>Code sample:</p>
+                 * <pre>
+                 * var game = Chessboard.newGame();
+                 * game.move("e4, e5, Nf3");
+                 * game.draw("myboard");
+                 * </pre>
+                 *
+                 * @method move
+                 * @param {String} moves a comma separated list of
+                 *        moves in the short algebraic notation.
+                 */
                 move: function(moves) {
                     var re = new RegExp("\\s*,\\s*");
                     var splits = moves.split(re);
