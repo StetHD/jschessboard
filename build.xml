@@ -47,7 +47,6 @@
     <condition property="version" value="${project.version}" else="${DSTAMP}">
       <isfalse value="${project.version.snapshot}"/>
     </condition>
-    <echo message="${version}"/>
     <property name="distname" value="${ant.project.name}-${version}"/>
   </target>
 
