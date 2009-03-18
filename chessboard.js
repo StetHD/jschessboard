@@ -797,8 +797,8 @@ var Chessboard = function() {
                  *
                  * <p>Examples:</p>
                  * <ul>
-                 *   <li>set('wq', 'd1') puts a white queen on square 'd1'</li>
-                 *   <li>set('bn', 'c6') puts a black knight on square 'c3'</li>
+                 *   <li><pre>set('wq', 'd1')</pre> puts a white queen on square 'd1'</li>
+                 *   <li><pre>set('bn', 'c6')</pre> puts a black knight on square 'c6'</li>
                  * </ul>
                  *
                  * @method set
