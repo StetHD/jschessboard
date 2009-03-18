@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ***** BEGIN LICENSE BLOCK *****
+ *
+ * Copyright 2008-2009 Jean-Christophe Sirot <sirot@xulfactory.org>
+ *
+ * This file is part of jsChessboard.
+ *
+ * jsChessboard is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * jsChessboard is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * jsChessboard. If not, see http://www.gnu.org/licenses/.
+ *
+ * ***** END LICENSE BLOCK ***** -->
+<project name="jsChessboard" default="dist">
+  <property file="build.properties"/>
+  <property name="build" location="build"/>
+  <property name="contrib" location="contrib"/>
+
+  <!--condition property="isUnix">
+    <os family="unix"/>
+  </condition-->
+
+  <condition property="generate-doc">
+    <istrue value="${project.jsdoc}"/>
+  </condition>
+
+
+  <taskdef name="jsmin"
+           classname="net.matthaynes.jsmin.JSMin_Task"
+           classpath="${contrib}/jsmin-0.2.3.jar"/>
+
+  <taskdef name="jsdoctoolkit"
+           classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
+           classpath="${contrib}/jsdoctoolkit-ant-task-1.0.jar;${contrib}/js.jar"/>
+
+  <target name="init">
+    <mkdir dir="${build}"/>
+    <tstamp/>
+    <condition property="version" value="${project.version}" else="${DSTAMP}">
+      <isfalse value="${project.version.snapshot}"/>
+    </condition>
+    <property name="distname" value="${ant.project.name}-${version}"/>
+  </target>
+
+  <target name="prepare-dist" depends="init"
+          description="Prepares the build environment">
+    <mkdir dir="${build}/${ant.project.name}"/>
+    <copy todir="${build}/${ant.project.name}">
+      <fileset dir=".">
+        <include name="examples/**"/>
+        <include name="*.txt"/>
+        <include name="chessboard.js"/>
+      </fileset>
+    </copy>
+    <echo message="${version}${line.separator}"
+          file="${build}/${ant.project.name}/VERSION"/>
+  </target>
+
+  <!--target name="dist-unix" if="isUnix">
+    <tar basedir="${build}"
+         destfile="${build}/${distname}.tar"
+         includes="${ant.project.name}/**"/>
+    <bzip2 src="${build}/${distname}.tar"
+           destfile="${build}/${distname}.tar.bz2" />
+  </target-->
+
+  <target name="dist" depends="prepare-dist, minimize, doc"
+          description="Build the project distribution archive">
+    <zip basedir="${build}"
+         includes="${ant.project.name}/**"
+         destfile="${build}/${distname}.zip" />
+  </target>
+
+  <target name="minimize" depends="prepare-dist"
+          description="Minimize the JavaScript files with JSMin">
+    <jsmin srcfile="chessboard.js" suffix="true" force="true"
+           destdir="${build}/${ant.project.name}"/>
+  </target>
+
+  <target name="doc" depends="prepare-dist" if="generate-doc"
+          description="Call JSDoc-toolkit documentation framework">
+    <mkdir dir="${build}/${ant.project.name}/doc" />
+    <jsdoctoolkit jsdochome="${project.jsdoc.path}"
+                  template="jsdoc"
+                  includeundocumented="true"
+                  outputdir="${build}/${ant.project.name}/doc">
+      <source file="chessboard.js" />
+    </jsdoctoolkit>
+  </target>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+  </target>
+</project>
