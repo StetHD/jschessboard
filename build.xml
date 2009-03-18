@@ -60,6 +60,8 @@
         <include name="chessboard.js"/>
       </fileset>
     </copy>
+    <echo message="${version}${line.separator}"
+          file="${build}/${ant.project.name}/VERSION"/>
   </target>
 
   <!--target name="dist-unix" if="isUnix">
