@@ -23,6 +23,7 @@
   <property file="build.properties"/>
   <property name="build" location="build"/>
   <property name="contrib" location="contrib"/>
+  <property environment="env"/>
 
   <!--condition property="isUnix">
     <os family="unix"/>
@@ -44,7 +45,9 @@
   <target name="init">
     <mkdir dir="${build}"/>
     <tstamp/>
-    <condition property="version" value="${project.version}" else="${DSTAMP}">
+    <condition property="version"
+               value="${project.version}"
+               else="${project.version}-${DSTAMP}">
       <isfalse value="${project.version.snapshot}"/>
     </condition>
     <property name="distname" value="${ant.project.name}-${version}"/>
@@ -88,7 +91,7 @@
   <target name="doc" depends="prepare-dist" if="generate-doc"
           description="Call JSDoc-toolkit documentation framework">
     <mkdir dir="${build}/${ant.project.name}/doc" />
-    <jsdoctoolkit jsdochome="${project.jsdoc.path}"
+    <jsdoctoolkit jsdochome="${env.JSDOC_HOME}"
                   template="jsdoc"
                   includeundocumented="true"
                   outputdir="${build}/${ant.project.name}/doc">
