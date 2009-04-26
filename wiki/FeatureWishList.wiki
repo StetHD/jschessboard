@@ -1,0 +1,7 @@
+#Feature wish list
+
+= Feature Wish List =
+
+  * FEN notation to setup a position
+  * track the casteling moves (for move legality)
+  * show/hide coordinates
