@@ -208,15 +208,7 @@ var Chessboard = function() {
          * @param {Piece} piece the piece to be drawn
          * @param {String} sq the code of the square on which the piece is drawn
          */
-       drawPiece: function(ctx, ratio, piece, sq) {
-            /* for browsers which do not support delayed image loading
-			var sz = ratio * 50;
-            x = (sq.charCodeAt(0) - 97) * sz;
-            y = (8 * sz) - (sq.charCodeAt(1) - 48) * sz;
-            var img = new Image();
-            img.src = piece.g;
-            ctx.drawImage(img, x, y, sz, sz);
-            */
+       drawPiece_async: function(ctx, ratio, piece, sq) {
             /** @inner */
             var mkdraw = function (ctx, img, x, y, s) {
                 return function() { ctx.drawImage(img, x, y, s, s); };
@@ -227,7 +219,25 @@ var Chessboard = function() {
             var img = new Image();
             img.src = gfx.images[piece.code];
             img.onload = mkdraw(ctx, img, x, y, sz);
-        }
+        },
+        
+        /**
+         * @private
+         * Draw a chess piece
+         * @param ctx the 2D context of the canvas element
+         * @param {Number} the drawing ratio
+         * @param {Piece} piece the piece to be drawn
+         * @param {String} sq the code of the square on which the piece is drawn
+         */
+       drawPiece_sync: function(ctx, ratio, piece, sq) {
+            /* for browsers which do not support delayed image loading */
+			var sz = ratio * 50;
+            x = (sq.charCodeAt(0) - 97) * sz;
+            y = (8 * sz) - (sq.charCodeAt(1) - 48) * sz;
+            var img = new Image();
+            img.src = gfx.images[piece.code];
+            ctx.drawImage(img, x, y, sz, sz);
+        }        
     };
 
     /** @private */
@@ -709,6 +719,11 @@ var Chessboard = function() {
         initialize: function() {
             /* Initialize gfx */
             gfx.images = defaultGfx;
+            if (window.opera !== undefined) {
+                gfx.drawPiece = gfx.drawPiece_sync;
+            } else {
+                gfx.drawPiece = gfx.drawPiece_async;
+            }
 
             this.ChessGame.prototype = {
                 /**
