@@ -106,6 +106,34 @@ var Chessboard = function() {
     };
 
     /** @inner */
+    var fen = {
+        /**
+         * @private
+         */
+        decode: function(game, pos) {
+            var blacks = new RegExp("[prnbqk]");
+            var whites = new RegExp("[PRNBQK]");
+            var digits = new RegExp("[1-8]");
+            var col = 1, row = 8;
+            for (var i = 0; i < pos.length; i++) {
+                var c = pos.charAt(i);
+                if (digits.test(c)) {
+                    col += c.charCodeAt(0) - 48;
+                } else if (blacks.test(c)) {
+                    game.set("b".concat(c), utils.toSquare(col, row));
+                    col++;
+                } else if (whites.test(c)) {
+                    game.set("w".concat(c.toLowerCase()), utils.toSquare(col, row));
+                    col++;
+                } else if (c === "/") {
+                    row--;
+                    col = 1;
+                }
+            }
+        }
+    };
+
+    /** @inner */
     var utils = {
         /**
          * @private
@@ -137,11 +165,11 @@ var Chessboard = function() {
          * @return {String} a square code or undefined if the square does not
          *         exist (row and column out of range)
          */
-        toSquare: function(row, col) {
+        toSquare: function(col, row) {
             if (row < 1 || row > 8 || col < 1 || col > 8) {
                 return undefined;
             }
-            return String.fromCharCode(96 + row, 48 + col);
+            return String.fromCharCode(96 + col, 48 + row);
         },
 
         /** @private */
@@ -824,6 +852,16 @@ var Chessboard = function() {
                 set: function(code, sq) {
                     utils.checkSquareValidity(sq);
                     this.pieces[sq] = new Piece(code);
+                },
+
+                /**
+                 * Sets the chessboard using the Forsyth-Edwards notation (FEN).
+                 *
+                 * @param {String} code the position using FEN.
+                 */
+                setFen: function(code) {
+                    this.clear();
+                    fen.decode(this, code);
                 },
 
                 /**
