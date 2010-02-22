@@ -40,7 +40,7 @@
 
   <taskdef name="jsdoctoolkit"
            classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit"
-           classpath="${contrib}/jsdoctoolkit-ant-task-1.0.2.jar"/>
+           classpath="${contrib}/jsdoctoolkit-ant-task-1.0.2.jar;${contrib}/js.jar"/>
 
   <target name="init">
     <mkdir dir="${build}"/>
