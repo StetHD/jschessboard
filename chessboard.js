@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+d /* ***** BEGIN LICENSE BLOCK *****
  *
  * Copyright 2008-2009 Jean-Christophe Sirot <sirot@xulfactory.org>
  *
@@ -855,13 +855,15 @@ var Chessboard = function() {
                 },
 
                 /**
-                 * Sets the chessboard using the Forsyth-Edwards notation (FEN).
+                 * Clears the chessboard and sets the chessboard using the 
+                 * Forsyth-Edwards notation (FEN).
                  *
-                 * @param {String} code the position using FEN.
+                 * @param {String} fenPosition the position using Forsyth-Edwards notation.
+                 * @see <a href="http://en.wikipedia.org/wiki/FEN">FEN notation details</a>
                  */
-                setFen: function(code) {
+                setFen: function(fenPosition) {
                     this.clear();
-                    fen.decode(this, code);
+                    fen.decode(this, fenPosition);
                 },
 
                 /**
