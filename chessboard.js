@@ -1,4 +1,4 @@
-d /* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE BLOCK *****
  *
  * Copyright 2008-2009 Jean-Christophe Sirot <sirot@xulfactory.org>
  *
