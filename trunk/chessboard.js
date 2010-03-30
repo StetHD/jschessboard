@@ -248,7 +248,7 @@ var Chessboard = function() {
             img.src = gfx.images[piece.code];
             img.onload = mkdraw(ctx, img, x, y, sz);
         },
-        
+
         /**
          * @private
          * Draw a chess piece
@@ -265,7 +265,7 @@ var Chessboard = function() {
             var img = new Image();
             img.src = gfx.images[piece.code];
             ctx.drawImage(img, x, y, sz, sz);
-        }        
+        }
     };
 
     /** @private */
@@ -855,7 +855,7 @@ var Chessboard = function() {
                 },
 
                 /**
-                 * Clears the chessboard and sets the chessboard using the 
+                 * Clears the chessboard and sets the chessboard using the
                  * Forsyth-Edwards notation (FEN).
                  *
                  * @param {String} fenPosition the position using Forsyth-Edwards notation.
