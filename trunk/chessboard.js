@@ -185,13 +185,21 @@ var Chessboard = function() {
     var gfx = {
         /**
          * @private
-         * Draw the chessboard diagram into the canvas identified by an
-         * 'id' attribute.
+         * Draw the chessboard diagram into the target canvas
          * @param {ChessGame} game the position to be drawn
-         * @param {String} id id attribute of the canvas element
+         * @param target the canvas element or the id attribute of the canvas
+         *        element
          */
-        drawBoard: function(game, id) {
-            var canvas = document.getElementById(id);
+        drawBoard: function(game, target) {
+            var canvas;
+            if (target instanceof HTMLCanvasElement) {
+                 canvas = target;
+            } else {
+                 canvas = document.getElementById(target);
+            }
+            if (canvas === undefined || canvas === null) {
+                throw ("Target canvas not found: " + target);
+            }
             var ratio = canvas.height / 400;
             var ctx = canvas.getContext("2d");
             gfx.initBoard(ctx, ratio);
@@ -919,11 +927,12 @@ var Chessboard = function() {
                 /**
                  * Draw a chessboard diagram representing the current
                  * game position.
-                 * @param {String} id the DOM id attribute of the canvas element
-                 *        on which the chessboard must be drawn.
+                 * @param target either the canvas element on
+                 *        which the chessboard must be drawn or the DOM id
+                 *        attribute of the canvas element.
                  */
-                draw: function(id) {
-                    gfx.drawBoard(this, id);
+                draw: function(target) {
+                    gfx.drawBoard(this, target);
                 }
             };
         }
