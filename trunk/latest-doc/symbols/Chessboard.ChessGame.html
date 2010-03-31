@@ -271,9 +271,10 @@ ul.inheritsList
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/Chessboard.ChessGame.html#draw">draw</a></b>(id)
+								<div class="fixedFont"><b><a href="../symbols/Chessboard.ChessGame.html#draw">draw</a></b>(target)
 								</div>
-								<div class="description">Draw a chessboard diagram representing the currentgame position.</div>
+								<div class="description">Draw a chessboard diagram representing the current
+game position.</div>
 							</td>
 						</tr>
 					
@@ -318,7 +319,7 @@ ul.inheritsList
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/Chessboard.ChessGame.html#setFen">setFen</a></b>(fenPosition)
 								</div>
-								<div class="description">Clears the chessboard and sets the chessboard using the 
+								<div class="description">Clears the chessboard and sets the chessboard using the
 Forsyth-Edwards notation (FEN).</div>
 							</td>
 						</tr>
@@ -353,7 +354,9 @@ Forsyth-Edwards notation (FEN).</div>
 				</div>
 				
 				<div class="description">
-					Creates a new ChessGame instance. This constructor should notbe called directly. Call Chessboard.newGame() to create a newChessGame.
+					Creates a new ChessGame instance. This constructor should not
+be called directly. Call Chessboard.newGame() to create a new
+ChessGame.
 					
 				</div>
 				
@@ -409,11 +412,12 @@ Forsyth-Edwards notation (FEN).</div>
 					<div class="fixedFont">
 					
 					
-					<b>draw</b>(id)
+					<b>draw</b>(target)
 					
 					</div>
 					<div class="description">
-						Draw a chessboard diagram representing the currentgame position.
+						Draw a chessboard diagram representing the current
+game position.
 						
 						
 					</div>
@@ -425,10 +429,12 @@ Forsyth-Edwards notation (FEN).</div>
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{String}</span> <b>id</b>
+									<b>target</b>
 									
 								</dt>
-								<dd>the DOM id attribute of the canvas element       on which the chessboard must be drawn.</dd>
+								<dd>either the canvas element on
+       which the chessboard must be drawn or the DOM id
+       attribute of the canvas element.</dd>
 							
 							</dl>
 						
@@ -449,7 +455,13 @@ Forsyth-Edwards notation (FEN).</div>
 					
 					</div>
 					<div class="description">
-						Applies a sequence of piece moves to the current position.<p>Code sample:</p><pre>var game = Chessboard.newGame();game.move("e4, e5, Nf3");game.draw("myboard");</pre>
+						Applies a sequence of piece moves to the current position.
+<p>Code sample:</p>
+<pre>
+var game = Chessboard.newGame();
+game.move("e4, e5, Nf3");
+game.draw("myboard");
+</pre>
 						
 						
 					</div>
@@ -464,7 +476,8 @@ Forsyth-Edwards notation (FEN).</div>
 									<span class="light fixedFont">{String}</span> <b>moves</b>
 									
 								</dt>
-								<dd>a comma separated list of       moves in the short algebraic notation.</dd>
+								<dd>a comma separated list of
+       moves in the short algebraic notation.</dd>
 							
 							</dl>
 						
@@ -510,7 +523,35 @@ Forsyth-Edwards notation (FEN).</div>
 					
 					</div>
 					<div class="description">
-						Sets a piece on a square of the chessboard.<p>The piece code is a String of the form XY where:</p><ul>  <li>X is the piece color:    <ul>      <li>'w' for white      <li>'b' for black    </ul>  </li>  <li>Y is the piece type    <ul>      <li>'k' for King      <li>'q' for Queen      <li>'r' for Rook      <li>'b' for Bishop      <li>'n' for Knight      <li>'p' for Pawn    </ul>  </li></ul><p>The square code uses the traditional chess squarenotation: 'a1', 'f6' or 'h8' are valid squares.</p><p>Examples:</p><ul>  <li><pre>set('wq', 'd1')</pre> puts a white queen on square 'd1'</li>  <li><pre>set('bn', 'c6')</pre> puts a black knight on square 'c6'</li></ul>
+						Sets a piece on a square of the chessboard.
+<p>The piece code is a String of the form XY where:</p>
+<ul>
+  <li>X is the piece color:
+    <ul>
+      <li>'w' for white
+      <li>'b' for black
+    </ul>
+  </li>
+  <li>Y is the piece type
+    <ul>
+      <li>'k' for King
+      <li>'q' for Queen
+      <li>'r' for Rook
+      <li>'b' for Bishop
+      <li>'n' for Knight
+      <li>'p' for Pawn
+    </ul>
+  </li>
+</ul>
+
+<p>The square code uses the traditional chess square
+notation: 'a1', 'f6' or 'h8' are valid squares.</p>
+
+<p>Examples:</p>
+<ul>
+  <li><pre>set('wq', 'd1')</pre> puts a white queen on square 'd1'</li>
+  <li><pre>set('bn', 'c6')</pre> puts a black knight on square 'c6'</li>
+</ul>
 						
 						
 					</div>
@@ -577,7 +618,7 @@ Forsyth-Edwards notation (FEN).</div>
 					
 					</div>
 					<div class="description">
-						Clears the chessboard and sets the chessboard using the 
+						Clears the chessboard and sets the chessboard using the
 Forsyth-Edwards notation (FEN).
 						
 						
@@ -650,7 +691,7 @@ Forsyth-Edwards notation (FEN).
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Mon Feb 22 2010 09:45:44 GMT+0100 (CET)
+			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> 2.1.0 on Wed Mar 31 2010 12:40:27 GMT+0200 (CEST)
 		</div>
 	</body>
 </html>
