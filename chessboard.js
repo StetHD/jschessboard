@@ -29,6 +29,7 @@
     for ( var i in "-".split(/-/) ) {
         if ( i === "index" ) {
             var oldSplit = String.prototype.split;
+            /** @private */
             String.prototype.split = function () {
                 var result = oldSplit.apply(this,
 Array.prototype.slice.apply(arguments));
