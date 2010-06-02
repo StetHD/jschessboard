@@ -20,6 +20,27 @@
  * ***** END LICENSE BLOCK *****  */
 
 /**
+ * @private
+ * This is a temporary bugfix against chromium issue #40931 since that issue
+ * is present in the Chrome stable release. This patch will be removed later...
+ * http://code.google.com/p/chromium/issues/detail?id=40931
+ */
+(function () {
+    for ( var i in "-".split(/-/) ) {
+        if ( i === "index" ) {
+            var oldSplit = String.prototype.split;
+            String.prototype.split = function () {
+                var result = oldSplit.apply(this,
+Array.prototype.slice.apply(arguments));
+                delete result['index'];
+                delete result['input'];
+                return result;
+            }
+        }
+    }
+})()
+
+/**
  * @namespace
  * Global namespace defined by the library.
  * @author <a href="mailto:sirot@xulfactory.org">Jean-Christophe Sirot</a>
