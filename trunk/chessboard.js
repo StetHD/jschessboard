@@ -26,7 +26,7 @@
  * http://code.google.com/p/chromium/issues/detail?id=40931
  */
 (function () {
-    for ( var i in "-".split(/-/) ) {
+    for (var i in "-".split(/-/)) {
         if ( i === "index" ) {
             var oldSplit = String.prototype.split;
             /** @private */
@@ -239,10 +239,11 @@ var Chessboard = function() {
          * @param {Number} the drawing ratio
          */
         initBoard: function(ctx, ratio) {
+            var i, j;
             var sz = 50 * ratio;
             ctx.fillStyle = gfx.images.black; //"rgb(0,127,0)";
-            for (var i = 0; i < 8; i++) {
-                for (var j = 0; j < 8; j++) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
                     if ((i + j) % 2 === 1) {
                         ctx.fillRect (i*sz, j*sz, sz, sz);
                     }
