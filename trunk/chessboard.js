@@ -1,6 +1,6 @@
 /* ***** BEGIN LICENSE BLOCK *****
  *
- * Copyright 2008-2009 Jean-Christophe Sirot <sirot@xulfactory.org>
+ * Copyright 2008-2010 Jean-Christophe Sirot <sirot@xulfactory.org>
  *
  * This file is part of jsChessboard.
  *

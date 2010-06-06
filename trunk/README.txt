@@ -1,12 +1,12 @@
 About
 -----
 
-jsChessboard is a JavaScript? library designed to programmatically display
+jsChessboard is a JavaScript library designed to programmatically display
 chessboard diagrams in web pages or web applications.
 
 The project is hosted at:
 
-  http://jschessboard.googlecode.com
+  http://jschessboard.com
 
 jsChessboard is a free software and is released unter the terms of the GPL
 version 3.0
@@ -59,5 +59,5 @@ From that point there is some possibilities according to your goal:
  o the chessboard can be drawn in the page:
       game.draw("mychessboard");
 
-The comprehensive API documentation is available in the doc directory of the
+The comprehensive API documentation is available in the /doc directory of the
 package.
